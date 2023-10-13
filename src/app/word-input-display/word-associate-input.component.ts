@@ -120,11 +120,8 @@ export class WordAssociateInputComponent implements OnInit{
       this.counter++;
       //console.log("Counter in alert: ", this.counter);
       setTimeout((expectedCurrentWord) => {
-        // If the list has moved to the next word, or an answer has been submitted for the current word, do nothing.
-        if(this.currentWord == expectedCurrentWord && this.inputElement?.disabled == false){
-          this.onEnter(this.currentWord,this.correctWord, this.inputElement!.value);
-        }
-      }, 10000, this.currentWord);
+        handleTimeout(expectedCurrentWord);
+       }, 10000, this.currentWord);
     }
   }
   //set the interval to minutes 
@@ -134,6 +131,27 @@ export class WordAssociateInputComponent implements OnInit{
   //   }, 11000);//(11000) User has 11 seconds to fill in the blank yoannes time
   // }
 
+  handleTimeout (expectedCurrentWord) {
+     // If the list has moved to the next word, or an answer has been submitted for the current word, do nothing.
+    if(this.currentWord == expectedCurrentWord && this.inputElement?.disabled == false) {
+      if( (Date.now() - lastTypedTime)/1000 > 2){
+        setTimeout((expectedCurrentWord) => {
+          handleTimeout(expectedCurrentWord);
+         }, 2000, this.currentWord);
+      } else {
+        this.onEnter(this.currentWord,this.correctWord, this.inputElement!.value);
+      }
+    }
+
+  }
+
+  // Handle keypress events. This will enabe tracking if the user is currently typing. 
+  onKeyUp(event){
+    this.lastTypedTime = Date.now();
+    if(event.key === 'Enter'){
+      this.onEnter(this.currentWord,this.correctWord, this.inputElement!.value)
+    }
+  }
 
   //Funtion with condition for different scenarios
   onEnter(fromDataList: string = '', correctWord: string, myuserInput: string) {
