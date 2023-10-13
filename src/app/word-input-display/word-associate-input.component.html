@@ -8,7 +8,8 @@
             name="userInputs"
 
             autocomplete="off"
-            (keyup.enter)="onEnter(currentWord,correctWord,userInputs.value)" 
+            (keyup)="onKeyUp($event)"
+<!--             (keyup.enter)="onEnter(currentWord,correctWord,userInputs.value)"  -->
             (click)="$event.stopPropagation()"
             required
             >
